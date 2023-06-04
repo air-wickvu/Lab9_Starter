@@ -69,23 +69,32 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id = "console-log-btn">Console Log</button>
+      <button id = "console-err-btn">Console Error</button>
+      <button id = "console-count-btn">Console Count</button>
+      <button id = "console-warn-btn">Console Warn</button>
+      <button id = "console-assert-btn">Console Assert</button>
+      <button id = "console-clear-btn">Console Clear</button>
+      <button id = "console-dir-btn">Console Dir</button>
+      <button id = "console-dirxml-btn">Console dirxml</button>
+      <button id = "console-groupstart-btn">Console Group Start</button>
+      <button id = "console-groupend-btn">Console Group End</button>
+      <button id = "console-table-btn">Console Table</button>
+      <button id = "console-start-btn">Start Timer</button>
+      <button id = "console-end-btn">End Timer</button>
+      <button id = "console-trace-btn">Console Trace</button>
+      <button id = "console-globalerr-btn">Trigger a Global Error</button>
     </section>
   </main>
+
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+    <script>
+      window.TrackJS && TrackJS.install({ 
+        token: "7af8123cf5244860a26f2b25d2a37094"
+        // for more configuration options, see https://docs.trackjs.com
+      });
+    </script>
+                        
 
   <script>
     let form = document.querySelector('form');
@@ -95,13 +104,129 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      
+      class CustomError extends Error{
+      constructor(message){
+        super(message);
+        this.name = '';
+      }
+    }
+
+      try{ 
+        if (operator == '/' && secondNum == 0) {
+          throw new CustomError('Cannot divide by zero');
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (error) {
+        output.innerHTML = 'error';
+        console.error(error);
+        TrackJS.track(error);
+      }
+      finally{
+        console.log('Hello World');
+      }
     });
+
+
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+    let consoleLogBtn = document.querySelector('#console-log-btn');
+    consoleLogBtn.addEventListener('click', () => {
+      console.log('Console Log');
+    });
+
+    let consoleErrBtn = document.querySelector('#console-err-btn');
+    consoleErrBtn.addEventListener('click', () => {
+      console.error('Console Error');
+    });
+
+    let consoleCountBtn = document.querySelector('#console-count-btn');
+    consoleCountBtn.addEventListener('click', () => {
+      console.count('Console Count');
+    });
+    
+    let consoleWarnBtn = document.querySelector('#console-warn-btn');
+    consoleWarnBtn.addEventListener('click', () => {
+      console.warn('Console Warn');
+    });
+
+    let consoleAssertBtn = document.querySelector('#console-assert-btn');
+    consoleAssertBtn.addEventListener('click', () => {
+      const x = 5;
+      const y = 3;
+      const reason = 'x is not equal to y'
+      console.assert(x === y, {x, y, reason});
+    });
+
+    let consoleClearBtn = document.querySelector('#console-clear-btn');
+    consoleClearBtn.addEventListener('click', () => {
+      console.clear();
+    });
+
+    let consoleDirBtn = document.querySelector('#console-dir-btn');
+    consoleDirBtn.addEventListener('click', () => {
+      console.dir(document.head);
+    });
+
+    let consoleDirXmlBtn = document.querySelector('#console-dirxml-btn');
+    consoleDirXmlBtn.addEventListener('click', () => {
+      console.dirxml(document);
+    });
+
+    let consoleGroupStartBtn = document.querySelector('#console-groupstart-btn');
+    consoleGroupStartBtn.addEventListener('click', () => {
+      console.group('Console Group');
+    });
+
+    let consoleGroupEndBtn = document.querySelector('#console-groupend-btn');
+    consoleGroupEndBtn.addEventListener('click', () => {
+      console.groupEnd('Console Group');
+    });
+
+    let consoleTableBtn = document.querySelector('#console-table-btn');
+    consoleTableBtn.addEventListener('click', () => {
+      console.table([
+        {name: 'A', age: 1},
+        {name: 'B', age: 2},
+        {name: 'C', age: 3},
+      ]);
+    });
+
+    let consoleStartBtn = document.querySelector('#console-start-btn');
+    consoleStartBtn.addEventListener('click', () => {
+      console.time('Console Timer');
+    });
+
+    let consoleEndBtn = document.querySelector('#console-end-btn');
+    consoleEndBtn.addEventListener('click', () => {
+      console.timeEnd('Console Timer');
+    });
+
+    let consoleTraceBtn = document.querySelector('#console-trace-btn');
+    consoleTraceBtn.addEventListener('click', () => {
+      const first = () => { second(); };
+      const second = () => { third(); };
+      const third = () => { console.trace(); };
+      first();
+    });
+
+    let consoleGlobalErrBtn = document.querySelector('#console-globalerr-btn');
+    consoleGlobalErrBtn.addEventListener('click', () => {
+      throw new Error('Global Error');
+    }); 
+
+
+
+
+
+
+
+    
+
+
   </script>
 </body>
 
